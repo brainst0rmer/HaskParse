@@ -1,0 +1,29 @@
+# Ignore compiled Haskell files
+*.hi
+*.o
+*.dyn_o
+*.dyn_hi
+
+# Ignore generated parser files
+*.y
+*.x
+*.hs
+
+# Ignore executable files
+*.exe
+*.out
+*.bin
+*.dSYM/
+
+# Ignore BNFC-generated files
+
+
+# Ignore build artifacts
+
+
+# Ignore temporary files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
