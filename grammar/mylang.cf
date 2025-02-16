@@ -1,0 +1,33 @@
+-- Production Rules
+
+-- Comments
+comment "!";
+
+-- Tokens
+token Id        ([a-zA-Z] [a-zA-Z0-9]{0,31}) ;
+token Num       ([0-9]+) ;
+token StringLit "'" ("\\." | [^'\\])* "'" ;
+
+-- Delimiters and Compound Symbols
+token Delim     "[\(\)\[\];:\.,\*\-\+/<=>]" ;
+token CompSym   "(<>)|(<=)|(>=)|(:=)" ;
+
+-- Program Id
+Prog.           Program ::= Program Id ;
+
+-- Data types
+Type.           Type ::= StandardType ;
+ArrayType.      Type ::= "array" "[" Num "]" ;
+StdType.        StandardType ::= Num ;
+
+-- Statements
+AssignStmt.     Statement ::= Variable AssignOp Expression ;
+ProcStmt.       Statement ::= ProcedureStatement ;
+CompStmt.       Statement ::= CompoundStatement ;
+IfThenElseStmt. Statement ::= "if" Expression "then" Statement "else" Statement ;
+IfThenStmt.     Statement ::= "if" Expression "then" Statement ;
+WhileDoStmt.    Statement ::= "while" Expression "do" Statement ;
+ReadStmt.       Statement ::= ReadStatement ;
+WriteStmt.      Statement ::= WriteStatement ;
+
+
