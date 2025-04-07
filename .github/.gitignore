@@ -27,3 +27,6 @@
 *~
 .DS_Store
 Thumbs.db
+
+*.xml
+*.idea/

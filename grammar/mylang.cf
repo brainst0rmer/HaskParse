@@ -4,21 +4,27 @@
 comment "!";
 
 -- Tokens
-token Id        ([a-zA-Z] [a-zA-Z0-9]{0,31}) ;
-token Num       ([0-9]+) ;
-token StringLit "'" ("\\." | [^'\\])* "'" ;
+token Id        (letter (letter | digit)*) ;
+token Integer   digit+ ;
+token String    '"' ((char - ["\"\\"]) | ('\\' ["\"\\tnrf"]))* '"' ;
 
 -- Delimiters and Compound Symbols
-token Delim     "[\(\)\[\];:\.,\*\-\+/<=>]" ;
-token CompSym   "(<>)|(<=)|(>=)|(:=)" ;
+--token Delim     "[\(\)\[\];:\.,\*\-\+/<=>]" ;
+--token CompSym   "(<>)|(<=)|(>=)|(:=)" ;
 
 -- Program Id
-Prog.           Program ::= Program Id ;
+Prog.           Program ::= Program Id;
+
+-- Variables
+Var.            Variable ::= Id ;
+
+-- Assignment Operator
+AssignOp.       AssignOp ::= "=" ;
 
 -- Data types
 Type.           Type ::= StandardType ;
-ArrayType.      Type ::= "array" "[" Num "]" ;
-StdType.        StandardType ::= Num ;
+ArrayType.      Type ::= "array" "[" Integer "]" ;
+StdType.        StandardType ::= Integer ;
 
 -- Statements
 AssignStmt.     Statement ::= Variable AssignOp Expression ;
@@ -29,5 +35,40 @@ IfThenStmt.     Statement ::= "if" Expression "then" Statement ;
 WhileDoStmt.    Statement ::= "while" Expression "do" Statement ;
 ReadStmt.       Statement ::= ReadStatement ;
 WriteStmt.      Statement ::= WriteStatement ;
+
+-- Expressions
+EAdd.           Expression ::= Expression "+" Term ;
+ESub.           Expression ::= Expression "-" Term ;
+ETerm.          Expression ::= Term ;
+
+EMul.           Term ::= Term "*" Factor ;
+EDiv.           Term ::= Term "/" Factor ;
+ETermF.         Term ::= Factor ;
+
+EInt.           Factor ::= Integer ;
+EVar.           Factor ::= Variable ;
+EParen.         Factor ::= "(" Expression ")" ;
+
+-- Procedure Statement
+ProcNoArgs.     ProcedureStatement ::= Id "(" ")" ;
+ProcWithArgs.   ProcedureStatement ::= Id "(" ExpressionList ")" ;
+
+-- Helper for arguments
+ListExp.        ExpressionList ::= Expression ;
+ListExpCons.    ExpressionList ::= Expression "," ExpressionList ;
+
+-- Compound Statement
+CompSt.     CompoundStatement ::= "begin" StatementList "end" ;
+
+-- Helper for multiple statements
+ListStmt.       StatementList ::= Statement ;
+ListStmtCons.   StatementList ::= Statement ";" StatementList ;
+
+-- Read Statement
+ReadSt.     ReadStatement ::= "read" "(" Variable ")" ;
+
+-- Write Statement
+WriteSt.    WriteStatement ::= "write" "(" Expression ")" ;
+
 
 
