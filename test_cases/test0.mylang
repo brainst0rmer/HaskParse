@@ -1,0 +1,14 @@
+program Sample
+begin
+  read(x);
+  y = x + 10;
+  if y then
+      write(y)
+  else
+      write(x);
+  while y do
+  begin
+      y = y - 1;
+      write(y)
+  end
+end

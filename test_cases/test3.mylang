@@ -1,0 +1,14 @@
+program NestedWhile
+begin
+  x = 3;
+  while x do
+  begin
+      y = x;
+      while y do
+      begin
+          write(y);
+          y = y - 1
+      end;
+      x = x - 1
+  end
+end

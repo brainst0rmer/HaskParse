@@ -19,17 +19,17 @@ transId :: Mylang.Abs.Id -> Result
 transId x = case x of
   Mylang.Abs.Id string -> failure x
 
-transInteger :: Mylang.Abs.Integer -> Result
-transInteger x = case x of
-  Mylang.Abs.Integer string -> failure x
+transMyInteger :: Mylang.Abs.MyInteger -> Result
+transMyInteger x = case x of
+  Mylang.Abs.MyInteger string -> failure x
 
-transString :: Mylang.Abs.String -> Result
-transString x = case x of
-  Mylang.Abs.String string -> failure x
+transMyString :: Mylang.Abs.MyString -> Result
+transMyString x = case x of
+  Mylang.Abs.MyString string -> failure x
 
 transProgram :: Mylang.Abs.Program -> Result
 transProgram x = case x of
-  Mylang.Abs.Prog program id -> failure x
+  Mylang.Abs.Prog id compoundstatement -> failure x
 
 transVariable :: Mylang.Abs.Variable -> Result
 transVariable x = case x of
@@ -37,16 +37,16 @@ transVariable x = case x of
 
 transAssignOp :: Mylang.Abs.AssignOp -> Result
 transAssignOp x = case x of
-  Mylang.Abs.AssignOp -> failure x
+  Mylang.Abs.AssignmentOp -> failure x
 
 transType :: Mylang.Abs.Type -> Result
 transType x = case x of
   Mylang.Abs.Type standardtype -> failure x
-  Mylang.Abs.ArrayType integer -> failure x
+  Mylang.Abs.ArrayType myinteger -> failure x
 
 transStandardType :: Mylang.Abs.StandardType -> Result
 transStandardType x = case x of
-  Mylang.Abs.StdType integer -> failure x
+  Mylang.Abs.StdType -> failure x
 
 transStatement :: Mylang.Abs.Statement -> Result
 transStatement x = case x of
@@ -73,7 +73,7 @@ transTerm x = case x of
 
 transFactor :: Mylang.Abs.Factor -> Result
 transFactor x = case x of
-  Mylang.Abs.EInt integer -> failure x
+  Mylang.Abs.EInt myinteger -> failure x
   Mylang.Abs.EVar variable -> failure x
   Mylang.Abs.EParen expression -> failure x
 

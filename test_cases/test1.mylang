@@ -1,0 +1,6 @@
+program AssignWrite
+begin
+  a = 5;
+  b = a * 2;
+  write(b)
+end

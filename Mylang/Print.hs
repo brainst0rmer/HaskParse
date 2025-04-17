@@ -139,13 +139,13 @@ instance Print Double where
 
 instance Print Mylang.Abs.Id where
   prt _ (Mylang.Abs.Id i) = doc $ showString i
-instance Print Integer where
-  prt _ (Integer i) = doc $ showString i
-instance Print String where
-  prt _ (String i) = doc $ showString i
+instance Print Mylang.Abs.MyInteger where
+  prt _ (Mylang.Abs.MyInteger i) = doc $ showString i
+instance Print Mylang.Abs.MyString where
+  prt _ (Mylang.Abs.MyString i) = doc $ showString i
 instance Print Mylang.Abs.Program where
   prt i = \case
-    Mylang.Abs.Prog program id_ -> prPrec i 0 (concatD [prt 0 program, prt 0 id_])
+    Mylang.Abs.Prog id_ compoundstatement -> prPrec i 0 (concatD [doc (showString "program"), prt 0 id_, prt 0 compoundstatement])
 
 instance Print Mylang.Abs.Variable where
   prt i = \case
@@ -153,16 +153,16 @@ instance Print Mylang.Abs.Variable where
 
 instance Print Mylang.Abs.AssignOp where
   prt i = \case
-    Mylang.Abs.AssignOp -> prPrec i 0 (concatD [doc (showString "=")])
+    Mylang.Abs.AssignmentOp -> prPrec i 0 (concatD [doc (showString "=")])
 
 instance Print Mylang.Abs.Type where
   prt i = \case
     Mylang.Abs.Type standardtype -> prPrec i 0 (concatD [prt 0 standardtype])
-    Mylang.Abs.ArrayType n -> prPrec i 0 (concatD [doc (showString "array"), doc (showString "["), prt 0 n, doc (showString "]")])
+    Mylang.Abs.ArrayType myinteger -> prPrec i 0 (concatD [doc (showString "array"), doc (showString "["), prt 0 myinteger, doc (showString "]")])
 
 instance Print Mylang.Abs.StandardType where
   prt i = \case
-    Mylang.Abs.StdType n -> prPrec i 0 (concatD [prt 0 n])
+    Mylang.Abs.StdType -> prPrec i 0 (concatD [doc (showString "integer")])
 
 instance Print Mylang.Abs.Statement where
   prt i = \case
@@ -189,7 +189,7 @@ instance Print Mylang.Abs.Term where
 
 instance Print Mylang.Abs.Factor where
   prt i = \case
-    Mylang.Abs.EInt n -> prPrec i 0 (concatD [prt 0 n])
+    Mylang.Abs.EInt myinteger -> prPrec i 0 (concatD [prt 0 myinteger])
     Mylang.Abs.EVar variable -> prPrec i 0 (concatD [prt 0 variable])
     Mylang.Abs.EParen expression -> prPrec i 0 (concatD [doc (showString "("), prt 0 expression, doc (showString ")")])
 

@@ -46,21 +46,17 @@ $white+ ;
 $l ($d | $l)*
     { tok (eitherResIdent T_Id) }
 
--- token Integer
+-- token MyInteger
 $d +
-    { tok (eitherResIdent T_Integer) }
+    { tok (eitherResIdent T_MyInteger) }
 
--- token String
+-- token MyString
 \" ([$u # [\" \\]] | \\ [\" \\ f n r t]) * \"
-    { tok (eitherResIdent T_String) }
+    { tok (eitherResIdent T_MyString) }
 
 -- Keywords and Ident
 $l $i*
     { tok (eitherResIdent TV) }
-
--- Integer
-$d+
-    { tok TI }
 
 {
 -- | Create a token with position.
@@ -76,8 +72,8 @@ data Tok
   | TD !String                    -- ^ Float literal.
   | TC !String                    -- ^ Character literal.
   | T_Id !String
-  | T_Integer !String
-  | T_String !String
+  | T_MyInteger !String
+  | T_MyString !String
   deriving (Eq, Show, Ord)
 
 -- | Smart constructor for 'Tok' for the sake of backwards compatibility.
@@ -141,8 +137,8 @@ tokenText t = case t of
   PT _ (TC s)   -> s
   Err _         -> "#error"
   PT _ (T_Id s) -> s
-  PT _ (T_Integer s) -> s
-  PT _ (T_String s) -> s
+  PT _ (T_MyInteger s) -> s
+  PT _ (T_MyString s) -> s
 
 -- | Convert a token to a string.
 prToken :: Token -> String
@@ -169,16 +165,16 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "]" 11
+  b "array" 12
     (b "-" 6
        (b "*" 3 (b ")" 2 (b "(" 1 N N) N) (b "," 5 (b "+" 4 N N) N))
-       (b "=" 9 (b ";" 8 (b "/" 7 N N) N) (b "[" 10 N N)))
-    (b "if" 17
-       (b "do" 14
-          (b "begin" 13 (b "array" 12 N N) N)
-          (b "end" 16 (b "else" 15 N N) N))
-       (b "while" 20
-          (b "then" 19 (b "read" 18 N N) N) (b "write" 21 N N)))
+       (b "=" 9 (b ";" 8 (b "/" 7 N N) N) (b "]" 11 (b "[" 10 N N) N)))
+    (b "integer" 18
+       (b "else" 15
+          (b "do" 14 (b "begin" 13 N N) N) (b "if" 17 (b "end" 16 N N) N))
+       (b "then" 21
+          (b "read" 20 (b "program" 19 N N) N)
+          (b "write" 23 (b "while" 22 N N) N)))
   where
   b s n = B bs (TS bs n)
     where

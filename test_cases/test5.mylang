@@ -1,0 +1,11 @@
+program ComplexIf
+begin
+  read(x);
+  if x + 1 then
+      if x then
+          write(1)
+      else
+          write(2)
+  else
+      write(0)
+end

@@ -6,23 +6,23 @@
 
 module Mylang.Abs where
 
-import Prelude (Integer, String)
+import Prelude (String)
 import qualified Prelude as C (Eq, Ord, Show, Read)
 import qualified Data.String
 
-data Program = Prog Program Id
+data Program = Prog Id CompoundStatement
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Variable = Var Id
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data AssignOp = AssignOp
+data AssignOp = AssignmentOp
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Type = Type StandardType | ArrayType Integer
+data Type = Type StandardType | ArrayType MyInteger
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data StandardType = StdType Integer
+data StandardType = StdType
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Statement
@@ -43,7 +43,7 @@ data Expression
 data Term = EMul Term Factor | EDiv Term Factor | ETermF Factor
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Factor = EInt Integer | EVar Variable | EParen Expression
+data Factor = EInt MyInteger | EVar Variable | EParen Expression
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ProcedureStatement
@@ -70,9 +70,9 @@ data WriteStatement = WriteSt Expression
 newtype Id = Id String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype Integer = Integer String
+newtype MyInteger = MyInteger String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
-newtype String = String String
+newtype MyString = MyString String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 

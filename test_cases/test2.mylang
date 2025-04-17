@@ -1,0 +1,6 @@
+program IfSample
+begin
+  read(x);
+  if x then
+      write(x)
+end

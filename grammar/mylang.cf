@@ -4,27 +4,23 @@
 comment "!";
 
 -- Tokens
-token Id        (letter (letter | digit)*) ;
-token Integer   digit+ ;
-token String    '"' ((char - ["\"\\"]) | ('\\' ["\"\\tnrf"]))* '"' ;
+token Id          (letter (letter | digit)*) ;
+token MyInteger   digit+ ;
+token MyString    '"' ((char - ["\"\\"]) | ('\\' ["\"\\tnrf"]))* '"' ;
 
--- Delimiters and Compound Symbols
---token Delim     "[\(\)\[\];:\.,\*\-\+/<=>]" ;
---token CompSym   "(<>)|(<=)|(>=)|(:=)" ;
+-- Program Declaration
+Prog.           Program ::= "program" Id CompoundStatement;
 
--- Program Id
-Prog.           Program ::= Program Id;
-
--- Variables
+-- Variable Declaration
 Var.            Variable ::= Id ;
 
--- Assignment Operator
-AssignOp.       AssignOp ::= "=" ;
+-- Assignment Operator (used inline in productions)
+AssignmentOp.   AssignOp ::= "=" ;
 
--- Data types
+-- Data Types
 Type.           Type ::= StandardType ;
-ArrayType.      Type ::= "array" "[" Integer "]" ;
-StdType.        StandardType ::= Integer ;
+ArrayType.      Type ::= "array" "[" MyInteger "]" ;
+StdType.        StandardType ::= "integer" ;
 
 -- Statements
 AssignStmt.     Statement ::= Variable AssignOp Expression ;
@@ -45,30 +41,27 @@ EMul.           Term ::= Term "*" Factor ;
 EDiv.           Term ::= Term "/" Factor ;
 ETermF.         Term ::= Factor ;
 
-EInt.           Factor ::= Integer ;
+EInt.           Factor ::= MyInteger ;
 EVar.           Factor ::= Variable ;
 EParen.         Factor ::= "(" Expression ")" ;
 
--- Procedure Statement
+-- Procedure Statements
 ProcNoArgs.     ProcedureStatement ::= Id "(" ")" ;
 ProcWithArgs.   ProcedureStatement ::= Id "(" ExpressionList ")" ;
 
--- Helper for arguments
+-- Expression List Helpers
 ListExp.        ExpressionList ::= Expression ;
 ListExpCons.    ExpressionList ::= Expression "," ExpressionList ;
 
 -- Compound Statement
-CompSt.     CompoundStatement ::= "begin" StatementList "end" ;
+CompSt.         CompoundStatement ::= "begin" StatementList "end" ;
 
--- Helper for multiple statements
+-- Statement List Helpers
 ListStmt.       StatementList ::= Statement ;
 ListStmtCons.   StatementList ::= Statement ";" StatementList ;
 
 -- Read Statement
-ReadSt.     ReadStatement ::= "read" "(" Variable ")" ;
+ReadSt.         ReadStatement ::= "read" "(" Variable ")" ;
 
 -- Write Statement
-WriteSt.    WriteStatement ::= "write" "(" Expression ")" ;
-
-
-
+WriteSt.        WriteStatement ::= "write" "(" Expression ")" ;

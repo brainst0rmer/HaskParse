@@ -51,62 +51,60 @@ import Mylang.Lex
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '('      { PT _ (TS _ 1)  }
-  ')'      { PT _ (TS _ 2)  }
-  '*'      { PT _ (TS _ 3)  }
-  '+'      { PT _ (TS _ 4)  }
-  ','      { PT _ (TS _ 5)  }
-  '-'      { PT _ (TS _ 6)  }
-  '/'      { PT _ (TS _ 7)  }
-  ';'      { PT _ (TS _ 8)  }
-  '='      { PT _ (TS _ 9)  }
-  '['      { PT _ (TS _ 10) }
-  ']'      { PT _ (TS _ 11) }
-  'array'  { PT _ (TS _ 12) }
-  'begin'  { PT _ (TS _ 13) }
-  'do'     { PT _ (TS _ 14) }
-  'else'   { PT _ (TS _ 15) }
-  'end'    { PT _ (TS _ 16) }
-  'if'     { PT _ (TS _ 17) }
-  'read'   { PT _ (TS _ 18) }
-  'then'   { PT _ (TS _ 19) }
-  'while'  { PT _ (TS _ 20) }
-  'write'  { PT _ (TS _ 21) }
-  L_integ  { PT _ (TI $$)   }
-  L_Id     { PT _ (T_Id $$) }
-  L_integ  { PT _ (TI $$)   }
-  L_quoted { PT _ (TL $$)   }
+  '('         { PT _ (TS _ 1)         }
+  ')'         { PT _ (TS _ 2)         }
+  '*'         { PT _ (TS _ 3)         }
+  '+'         { PT _ (TS _ 4)         }
+  ','         { PT _ (TS _ 5)         }
+  '-'         { PT _ (TS _ 6)         }
+  '/'         { PT _ (TS _ 7)         }
+  ';'         { PT _ (TS _ 8)         }
+  '='         { PT _ (TS _ 9)         }
+  '['         { PT _ (TS _ 10)        }
+  ']'         { PT _ (TS _ 11)        }
+  'array'     { PT _ (TS _ 12)        }
+  'begin'     { PT _ (TS _ 13)        }
+  'do'        { PT _ (TS _ 14)        }
+  'else'      { PT _ (TS _ 15)        }
+  'end'       { PT _ (TS _ 16)        }
+  'if'        { PT _ (TS _ 17)        }
+  'integer'   { PT _ (TS _ 18)        }
+  'program'   { PT _ (TS _ 19)        }
+  'read'      { PT _ (TS _ 20)        }
+  'then'      { PT _ (TS _ 21)        }
+  'while'     { PT _ (TS _ 22)        }
+  'write'     { PT _ (TS _ 23)        }
+  L_Id        { PT _ (T_Id $$)        }
+  L_MyInteger { PT _ (T_MyInteger $$) }
+  L_MyString  { PT _ (T_MyString $$)  }
 
 %%
-
-Integer :: { Integer }
-Integer  : L_integ  { (read $1) :: Integer }
 
 Id :: { Mylang.Abs.Id }
 Id  : L_Id { Mylang.Abs.Id $1 }
 
-Integer :: { Integer }
-Integer  : L_integ  { (read $1) :: Integer }
+MyInteger :: { Mylang.Abs.MyInteger }
+MyInteger  : L_MyInteger { Mylang.Abs.MyInteger $1 }
 
-String  :: { String }
-String   : L_quoted { $1 }
+MyString :: { Mylang.Abs.MyString }
+MyString  : L_MyString { Mylang.Abs.MyString $1 }
 
 Program :: { Mylang.Abs.Program }
-Program : Program Id { Mylang.Abs.Prog $1 $2 }
+Program : 'program' Id CompoundStatement { Mylang.Abs.Prog $2 $3 }
 
 Variable :: { Mylang.Abs.Variable }
 Variable : Id { Mylang.Abs.Var $1 }
 
 AssignOp :: { Mylang.Abs.AssignOp }
-AssignOp : '=' { Mylang.Abs.AssignOp }
+AssignOp : '=' { Mylang.Abs.AssignmentOp }
 
 Type :: { Mylang.Abs.Type }
 Type
   : StandardType { Mylang.Abs.Type $1 }
-  | 'array' '[' Integer ']' { Mylang.Abs.ArrayType $3 }
+  | 'array' '[' MyInteger ']' { Mylang.Abs.ArrayType $3 }
 
 StandardType :: { Mylang.Abs.StandardType }
-StandardType : Integer { Mylang.Abs.StdType $1 }
+StandardType : 'integer' { Mylang.Abs.StdType }
 
 Statement :: { Mylang.Abs.Statement }
 Statement
@@ -133,7 +131,7 @@ Term
 
 Factor :: { Mylang.Abs.Factor }
 Factor
-  : Integer { Mylang.Abs.EInt $1 }
+  : MyInteger { Mylang.Abs.EInt $1 }
   | Variable { Mylang.Abs.EVar $1 }
   | '(' Expression ')' { Mylang.Abs.EParen $2 }
 

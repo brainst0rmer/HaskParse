@@ -16,7 +16,8 @@
 *.dSYM/
 
 # Ignore BNFC-generated files
-
+*.hs.bak
+*.txt.bak
 
 # Ignore build artifacts
 
@@ -28,5 +29,6 @@
 .DS_Store
 Thumbs.db
 
-*.xml
-*../.idea/
+
+#vscode folder
+.vscode/
