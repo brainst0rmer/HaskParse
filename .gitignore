@@ -4,11 +4,6 @@
 *.dyn_o
 *.dyn_hi
 
-# Ignore generated parser files
-*.y
-*.x
-*.hs
-
 # Ignore executable files
 *.exe
 *.out
@@ -18,6 +13,8 @@
 # Ignore BNFC-generated files
 *.hs.bak
 *.txt.bak
+*.x.bak
+*.y.bak
 
 # Ignore build artifacts
 
