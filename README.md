@@ -1,5 +1,5 @@
 
-# Language Compiler
+# HaskParse
 
 This repository contains the BNFC grammar, generated front‑end, and an interpreter/CLI for a custom programming language.
 
