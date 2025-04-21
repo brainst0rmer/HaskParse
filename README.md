@@ -1,84 +1,74 @@
+
 # Language Compiler
 
-This repository contains the BNFC grammar and generated parser for a custom programming language.
+This repository contains the BNFC grammar, generated front‑end, and an interpreter/CLI for a custom programming language.
 
-## Grammar Specification
+## Overview
 
-### Lexical Units
+A complete toolchain has been built using:
 
-- **Identifiers**  
-  A letter followed by letters or digits (e.g., `myVar1`).  
-- **Integers**  
-  One or more digits (e.g., `42`).  
-- **Strings**  
-  Double‑quoted (`"..."`), with escapes: `\"`, `\\`, `\n`, `\t`, `\r`, `\f`.  
-- **Comments**  
-  Start with `!` and run to end of line.
+- **BNFC** to generate a lexer, parser, and abstract syntax tree in Haskell  
+- **Haskell** (`StateT`‑based interpreter) to execute programs  
+- A **CLI** driver to parse and run `.mylang` source files  
 
-### Reserved Words
+## Project Structure
 
-These cannot be used as identifiers:
 ```
-program, if, then, else, while, do, read, write, begin, end, array
+/
+├── mylang.cf            # BNFC grammar definition
+├── Makefile             # automates bnfc, build, clean
+├── Interpreter.hs       # custom interpreter implementation
+├── Mylang/              # BNFC‐generated Haskell modules
+│   ├── Abs.hs     # AST data types
+│   ├── Lex.hs     # lexer (Alex) 
+│   ├── Par.hs     # parser (Happy)
+│   ├── Print.hs   # pretty‐printer
+│   ├── Skel.hs    # skeleton for tree visitors
+│   └── Test.hs    # CLI driver (Main module)
+└── testcases/
+    └── # sample programs
 ```
 
-### Operators & Delimiters
+## Prerequisites
 
-All appear inline in the grammar:
+- **GHC** (The Glasgow Haskell Compiler)  
+- **Alex** & **Happy** (installed via `cabal install alex happy`)  
+- **BNFC** (v2.9+), available at http://bnfc.digitalgrammars.com/  
 
-- **Arithmetic:** `+`, `-`, `*`, `/`  
-- **Assignment:** `=`  
-- **Grouping:** `(`, `)`  
-- **Statement end:** `;`  
-- **List sep:** `,`  
-- **Blocks:** `begin`, `end`
+## Build & Install
 
-### Production Rules Summary
+1. **Generate parser + Makefile**  
+   ```bash
+   bnfc -d -m mylang.cf
+   ```
+2. **Compile everything**  
+   ```bash
+   make
+   ```
+3. **Build the standalone CLI**  
+   ```bash
+   ghc -iMylang -o mylang \
+     Mylang/Test.hs Interpreter.hs Mylang/*.hs
+   ```
 
-```bnf
-Program             ::= "program" Id CompoundStatement
+A `clean` target in `Makefile` removes generated `.hi`/`.o` files and the `mylang` binary.
 
-Variable            ::= Id
-AssignOp            ::= "="
+## Examples
 
-Type                ::= StandardType
-                     | "array" "[" MyInteger "]"
-
-StandardType        ::= "integer"
-
-Statement           ::= Variable AssignOp Expression
-                     | ProcedureStatement
-                     | CompoundStatement
-                     | "if" Expression "then" Statement "else" Statement
-                     | "if" Expression "then" Statement
-                     | "while" Expression "do" Statement
-                     | ReadStatement
-                     | WriteStatement
-
-Expression          ::= Expression "+" Term
-                     | Expression "-" Term
-                     | Term
-
-Term                ::= Term "*" Factor
-                     | Term "/" Factor
-                     | Factor
-
-Factor              ::= MyInteger
-                     | Variable
-                     | "(" Expression ")"
-
-ProcedureStatement  ::= Id "(" ")"
-                     | Id "(" ExpressionList ")"
-
-ExpressionList      ::= Expression
-                     | Expression "," ExpressionList
-
-CompoundStatement   ::= "begin" StatementList "end"
-
-StatementList       ::= Statement
-                     | Statement ";" StatementList
-
-ReadStatement       ::= "read" "(" Variable ")"
-
-WriteStatement      ::= "write" "(" Expression ")"
+```mylang
+program Demo
+begin
+  read(x);
+  if x then write(x * 2) else write(0);
+end
 ```
+
+## Testing
+
+- **Unit tests** under `testcases/` can be run by:
+  ```bash
+  for f in testcases/*.mylang; do
+    ./Mylang/Test "$f"
+  done
+  ```
+- Exit code `0` indicates success; non‑zero signals parse or runtime error.
